@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 public class LightDetection : MonoBehaviour
@@ -20,7 +21,7 @@ public class LightDetection : MonoBehaviour
     private RenderTexture m_texTemp;
     private Rect m_rectLight;
     private Color m_LightPixel;
-
+    public TextMeshProUGUI text;
     private void Start()
     {
         StartLightDetection();
@@ -70,6 +71,17 @@ public class LightDetection : MonoBehaviour
 
             if (m_bLogLightValue)
             {
+                if (s_fLightValue <= .3f)
+                {
+                    text.text = "Hidden";
+                }
+                if (s_fLightValue >= .3f)
+                {
+                    text.text = "Visible";
+                    //Color visibleColor = new Color(0.1f, 0.5f, 0.15f, 1.0f);
+                    //text.Color = visibleColor;
+                }
+
                 Debug.Log("Light Value: " + s_fLightValue);
             }
 

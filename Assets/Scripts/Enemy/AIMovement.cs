@@ -4,7 +4,8 @@ using UnityEngine;
 using UnityEngine.AI;
 public class AIMovement: MonoBehaviour
 {
-    public NavMeshAgent navMeshAgent;               //  Nav mesh agent component
+    NavMeshAgent navMeshAgent;                      //  Nav mesh agent component
+    //public FieldOfView3D FieldOfView3D;
     public float startWaitTime = 4;                 //  Wait time of every action
     public float timeToRotate = 2;                  //  Wait time when the enemy detect near the player without seeing
     public float speedWalk = 6;                     //  Walking speed, speed in the nav mesh agent
@@ -17,6 +18,9 @@ public class AIMovement: MonoBehaviour
     public float meshResolution = 1.0f;             //  How many rays will cast per degree
     public int edgeIterations = 4;                  //  Number of iterations to get a better performance of the mesh filter when the raycast hit an obstacule
     public float edgeDistance = 0.5f;               //  Max distance to calcule the a minumun and a maximum raycast when hits something
+    public float health;                                              
+    public float timeBetweenAttacks;
+    bool alreadyAttacked;
 
 
     public Transform[] waypoints;                   //  All the waypoints where the enemy patrols
@@ -31,7 +35,9 @@ public class AIMovement: MonoBehaviour
     bool m_PlayerNear;                              //  If the player is near, state of hearing
     bool m_IsPatrol;                                //  If the enemy is patrol, state of patroling
     bool m_CaughtPlayer;                            //  if the enemy has caught the player
-
+    public bool isVisible;
+    public LightDetection LightDetection;
+    public PlayerMovement PlayerMovement;
     void Start()
     {
         m_PlayerPosition = Vector3.zero;
@@ -45,13 +51,17 @@ public class AIMovement: MonoBehaviour
         m_CurrentWaypointIndex = 0;                 //  Set the initial waypoint
         navMeshAgent = GetComponent<NavMeshAgent>();
 
+
         navMeshAgent.isStopped = false;
         navMeshAgent.speed = speedWalk;             //  Set the navemesh speed with the normal speed of the enemy
         navMeshAgent.SetDestination(waypoints[m_CurrentWaypointIndex].position);    //  Set the destination to the first waypoint
+       
+
     }
 
     private void Update()
     {
+        Debug.Log(isVisible);
         EnviromentView();                       //  Check whether or not the player is in the enemy's field of vision
 
         if (!m_IsPatrol)
@@ -61,6 +71,10 @@ public class AIMovement: MonoBehaviour
         else
         {
             Patroling();
+        }
+        if(Vector3.Distance(transform.position, GameObject.FindGameObjectWithTag("Player").transform.position) <= .5f)
+        {
+            PlayerMovement.Death();
         }
     }
 
@@ -160,9 +174,10 @@ public class AIMovement: MonoBehaviour
         navMeshAgent.speed = speed;
     }
 
-    void CaughtPlayer()
+    public void CaughtPlayer()
     {
         m_CaughtPlayer = true;
+        PlayerMovement.Death();
     }
 
     void LookingPlayer(Vector3 player)
@@ -185,10 +200,27 @@ public class AIMovement: MonoBehaviour
             }
         }
     }
+    public void Damage()
+    {
+        if(health <= 0)
+        {
+            Death();
+        }
+        health -= 1f;
+        Debug.Log(health);
+    }
+    public void Death()
+    {
+        Destroy(gameObject, 1);
+    }
+    IEnumerator Search()
+    {
+        yield return new WaitForSeconds(2.5f);
+    }
 
     void EnviromentView()
     {
-        Collider[] playerInRange = Physics.OverlapSphere(transform.position, viewRadius, playerMask);   //  Make an overlap sphere around the enemy to detect the playermask in the view radius
+        Collider[] playerInRange = /*FOV;*/ Physics.OverlapSphere(transform.position, viewRadius, playerMask);   //  Make an overlap sphere around the enemy to detect the playermask in the view radius
 
         for (int i = 0; i < playerInRange.Length; i++)
         {
@@ -199,8 +231,18 @@ public class AIMovement: MonoBehaviour
                 float dstToPlayer = Vector3.Distance(transform.position, player.position);          //  Distance of the enmy and the player
                 if (!Physics.Raycast(transform.position, dirToPlayer, dstToPlayer, obstacleMask))
                 {
-                    m_playerInRange = true;             //  The player has been seeing by the enemy and then the nemy starts to chasing the player
-                    m_IsPatrol = false;                 //  Change the state to chasing the player
+                    if(LightDetection.s_fLightValue <= .3f)
+                    {
+                        m_playerInRange = false;             //  The player has been seeing by the enemy and then the nemy starts to chasing the player
+                        m_IsPatrol = true;                 //  Change the state to chasing the player
+
+                    }
+                    else
+                    {
+                        m_playerInRange = true;             //  The player has been seeing by the enemy and then the nemy starts to chasing the player
+                        m_IsPatrol = false;                 //  Change the state to chasing the player
+                    }
+
                 }
                 else
                 {

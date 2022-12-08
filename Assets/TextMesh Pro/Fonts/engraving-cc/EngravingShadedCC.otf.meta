@@ -1,0 +1,22 @@
+fileFormatVersion: 2
+guid: 7b71eae42e9238d43bc8cec5e690b4c9
+TrueTypeFontImporter:
+  externalObjects: {}
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontNames:
+  - Engraving Shaded CC
+  fallbackFontReferences:
+  - {fileID: 12800000, guid: 662e2978a813d4c4a868ac1d209153ca, type: 3}
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
