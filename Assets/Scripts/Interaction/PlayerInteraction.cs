@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using TMPro;
 using UnityEngine;
 
@@ -40,13 +40,13 @@ public class PlayerInteraction : MonoBehaviour
 
 	private void HandleInteraction(Interactable interactable)
 	{
-		KeyCode key = KeyCode.E;
+		
 		switch (interactable.interactionType)
 		{
 			case Interactable.InteractionType.Minigame:
 				break;
 			case Interactable.InteractionType.Click:
-				if (UnityEngine.Input.GetKeyDown(key))
+				if (UnityEngine.Input.GetButtonDown("Interact"))
 				{
 					interactable.Interact();
 				}

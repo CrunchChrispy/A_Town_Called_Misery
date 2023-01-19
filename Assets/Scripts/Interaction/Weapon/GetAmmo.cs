@@ -1,12 +1,12 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GetAmmo : Interactable
 {
-
+	[HideInInspector]
 	public bool gotAmmo;
-
+	[HideInInspector]
 	public bool ammo;
-	public Gun Gun;
+	public PlayerMovement PlayerMovement;
 	private void Start()
 	{
 		ammo = false;
@@ -19,7 +19,7 @@ public class GetAmmo : Interactable
 		if (gotAmmo)
 		{
 			ammo = true;
-			Gun.reloads += 1;
+			PlayerMovement.revolverAmmo += 12;
 			Destroy(this.gameObject);
 		}
 	}

@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class SceneManagement : MonoBehaviour
 {
-    public void StartLevel(int level)
+	public void StartLevel(int level)
     {
         
         SceneManager.LoadScene(level);

@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
@@ -6,90 +6,145 @@ using UnityEngine;
 public class Gun : MonoBehaviour
 {
     public float damage;
+    [Range(10,110)]
     public float range;
     public float fireRate;
     public float impactForce;
     public int reloads;
-    public int maxAmmo;
+    public int ammoCapacity;
     public float reloadTime;
 
 
     public UIManager UIManager;
+	public AudioManager AudioManager;
     public Camera fpsCam;
     //public GameObject impactEffect;
 
-    private int currentAmmo;
+    
+    private int reloadedAmmo;
     private bool isReloading = false;
-    private float nextTimeToFire = 0f;
+	private float nextTimeToFire = 0f;
+	private AudioSource noise;
 
     ParticleSystem muzzleFlash;
     AIMovement AIMovement;
-    PlayerMovement PlayerMovement;
-
-
-
-
-
+	public PlayerMovement PlayerMovement;
 
     //public Animator animator;
 
     void Start()
-    {
-        currentAmmo = 0;
-        if (currentAmmo == -1)
-            currentAmmo = maxAmmo;
-        UIManager.AmmoCount.text = currentAmmo + "/" + maxAmmo;
+	{
 
-        AIMovement = GetComponent<AIMovement>();
-        PlayerMovement = GetComponent<PlayerMovement>();
-        muzzleFlash = GetComponentInChildren<ParticleSystem>();
+	    	
+		//PlayerMovement.currentAmmo = 0;
+		//if (PlayerMovement.currentAmmo <= 0)
+		//		PlayerMovement.currentAmmo = ammoCapacity;
+		//UIManager.AmmoCount.text = PlayerMovement.currentAmmo + "/" + PlayerMovement.revolverAmmo;
+
+	    muzzleFlash = GetComponentInChildren<ParticleSystem>();
+	    noise = GetComponent<AudioSource>();
 
     }
 
     void Update()
-    {
-        UIManager.AmmoCount.text = currentAmmo + "/" + maxAmmo;
+	{
+	    	
+			UIManager.AmmoCount.text = PlayerMovement.currentAmmo + "/" + PlayerMovement.revolverAmmo;
+			
+			if (PlayerMovement.currentAmmo < ammoCapacity && PlayerMovement.revolverAmmo >= 1)
+			{
+				
+				if (Input.GetButtonDown("Reload"))
+				{
+					StartCoroutine(Reload());
+					return;
+				}
+			}
+				
 
-        if (isReloading)
-            return;
+     
+			if (isReloading){
+					
+				return;
+					
+			}
+           
+		if(PlayerMovement.revolver = true) {
+        				
+		if (Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire && PlayerMovement.currentAmmo >= 1 && Time.timeScale == 1)
+		{
+			nextTimeToFire = Time.time + 1f / fireRate;
+			Shoot();
+		}
+		}
+		//UIManager.Pause.enabled == false
+			
+	}
+	    
 
-        if (currentAmmo <= 0 && reloads >= 1)
-        {
-            StartCoroutine(Reload());
-            return;
-        }
-
-
-        if (Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire && currentAmmo >= 1)
-        {
-            nextTimeToFire = Time.time + 1f / fireRate;
-            Shoot();
-        }
-
-    }
 
     IEnumerator Reload()
     {
         isReloading = true;
-        Debug.Log("Reloading...");
+	    Debug.Log("Reloading...");
+	    	
+	    //reloadedAmmo = ammoCapacity - PlayerMovement.currentAmmo;
+ 
+	    
+	    yield return new WaitForSeconds(reloadTime - .25f);
+		
+	    int reloadedAmmo = 1;
+	    PlayerMovement.currentAmmo += reloadedAmmo;
+	    //animator.SetBool("Reloading", false);
 
-        //animator.SetBool("Reloading", true);
+	    yield return new WaitForSeconds(.25f);
 
-        yield return new WaitForSeconds(reloadTime - .25f);
+	    //PlayerMovement.currentAmmo = ammoCapacity;
+	    isReloading = false;
+	    PlayerMovement.revolverAmmo -= reloadedAmmo;
+	    		    
+	    //if(PlayerMovement.currentAmmo == ammoCapacity || PlayerMovement.revolverAmmo >= 0){
+		//    isReloading = false;
+	    //}
+	    //else{
+	    
+	    //for (int i = 0; i < PlayerMovement.currentAmmo; i++) {
+	    	
+	    	
+		//    PlayerMovement.currentAmmo += 1;
+		//    PlayerMovement.revolverAmmo -= reloadedAmmo;
+		//    i++;
+		//    yield return new WaitForSeconds(reloadTime - .25f);
+		    
+		    
+		    
+		//    yield return null;
+	    //}
+	    
+	    //}
+	    
+	    // }
 
         //animator.SetBool("Reloading", false);
 
-        yield return new WaitForSeconds(.25f);
+	    //yield return new WaitForSeconds(.25f);
+        
+	    
 
-        currentAmmo = maxAmmo;
-        isReloading = false;
-        reloads -= 1;
+
+	    //PlayerMovement.currentAmmo = ammoCapacity;
+        
+	    
     }
 
     void Shoot()
     {
-        muzzleFlash.Play();
-        currentAmmo--;
+	    muzzleFlash.Play();
+	    noise.clip = AudioManager.gunShot;
+	    noise.Play();
+	    //StartCoroutine(GunSounds());		 
+	    PlayerMovement.currentAmmo--;
+	   
         RaycastHit hit;
         if (Time.timeScale == 1)
         {
@@ -109,5 +164,11 @@ public class Gun : MonoBehaviour
                 //Destroy(ImpactOBJ, 2f);
             }
         }
+
     }
+	//IEnumerator GunSounds(){
+
+	//	noise.clip = AudioManager.gunCock;
+	//	yield return new WaitForSeconds(reloadTime - .25f);
+	//}
 }

@@ -1,18 +1,18 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class LightDetection : MonoBehaviour
 {
     [Header("Settings")]
-    [Tooltip("The camera who scans for light.")]
-    public Camera m_camLightScan;
-    [Tooltip("Show the light value in the log.")]
+
     public bool m_bLogLightValue = false;
     [Tooltip("Time between light value updates (default = 0.1f).")]
     public float LightValue = 0.1f;
-
+	
+	public float visibility;
     public /*static*/ float s_fLightValue;
 
     private const int c_iTextureSize = 1;
@@ -22,6 +22,8 @@ public class LightDetection : MonoBehaviour
     private Rect m_rectLight;
     private Color m_LightPixel;
     public TextMeshProUGUI text;
+    public Camera m_camLightScan;
+
     private void Start()
     {
         StartLightDetection();
@@ -74,12 +76,15 @@ public class LightDetection : MonoBehaviour
                 if (s_fLightValue <= .3f)
                 {
                     text.text = "Hidden";
+                    Color HiddenColor = new Color(1f, 1f, 1f, 1f);
+                    text.color = HiddenColor;
                 }
                 if (s_fLightValue >= .3f)
                 {
                     text.text = "Visible";
-                    //Color visibleColor = new Color(0.1f, 0.5f, 0.15f, 1.0f);
-                    //text.Color = visibleColor;
+
+                    Color visibleColor = new Color(0.9f, .1f, .1f, 1.0f);
+                    text.color = visibleColor;
                 }
 
                 Debug.Log("Light Value: " + s_fLightValue);

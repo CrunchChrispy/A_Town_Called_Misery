@@ -1,15 +1,15 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class GetRevolver : Interactable
 {
 	//public GameObject Revolver;
-	public PlayerManager PlayerManager;
+	public PlayerMovement PlayerMovement;
 	private bool gotRevolver;
 	
 
 	private void Start()
 	{
-		PlayerManager.revolver = false;
+		PlayerMovement.revolver = false;
 		this.gameObject.SetActive(value: true);
 		UpdateLight();
 	}
@@ -18,7 +18,7 @@ public class GetRevolver : Interactable
 	{
 		if (gotRevolver)
 		{
-			PlayerManager.revolver = true;
+			PlayerMovement.revolver = true;
 			this.gameObject.SetActive(value: false);
 		}
 	}

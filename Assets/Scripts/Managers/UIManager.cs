@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
@@ -13,13 +13,14 @@ public class UIManager : MonoBehaviour
     public Canvas GameOver;
     public Canvas Pause;
     public LightDetection LightDetection;
-    public PlayerManager PlayerManager;
+	public PlayerMovement PlayerMovement;
     public Slider slider;
     void Start()
     {
         GameOver.enabled = false;
         Pause.enabled = false;
     }
+	
 
     void Update()
     {
@@ -38,17 +39,17 @@ public class UIManager : MonoBehaviour
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
         }
-        if (PlayerManager.revolver == false)
+        if (PlayerMovement.revolver == false)
         {
-            PlayerManager.Weapon.SetActive(false);
+            PlayerMovement.Revolver.SetActive(false);
             AmmoCount.enabled = false;
         }
         else
         {
-            PlayerManager.Weapon.SetActive(true);
+            PlayerMovement.Revolver.SetActive(true);
             AmmoCount.enabled = true;
         }
-        if (Input.GetKeyDown(KeyCode.P))
+	    if (Input.GetButtonDown("Start"))
         {
             Time.timeScale = 0;
             Pause.enabled = true;

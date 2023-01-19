@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class WeaponSwitching : MonoBehaviour
 {
+    [HideInInspector]
     public int selectedWeapon = 0;
     public GameObject gunUI;
     void Start()
