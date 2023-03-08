@@ -16,6 +16,7 @@ public class PlayerInteraction : MonoBehaviour
 	{
 		cam = Camera.main;
 		Cursor.visible = false;
+		interactionText = GameObject.Find("Interaction Text").GetComponent<TextMeshProUGUI>();
 	}
 
 	private void Update()

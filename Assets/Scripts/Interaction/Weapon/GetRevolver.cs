@@ -1,16 +1,19 @@
 ﻿using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
 
 public class GetRevolver : Interactable
 {
-	//public GameObject Revolver;
 	public PlayerMovement PlayerMovement;
 	private bool gotRevolver;
+	private AudioSource pickup;
 	
-
 	private void Start()
 	{
 		PlayerMovement.revolver = false;
 		this.gameObject.SetActive(value: true);
+		pickup = GetComponent<AudioSource>();	
+		PlayerMovement = GameObject.FindObjectOfType<PlayerMovement>();
 		UpdateLight();
 	}
 
@@ -18,9 +21,21 @@ public class GetRevolver : Interactable
 	{
 		if (gotRevolver)
 		{
-			PlayerMovement.revolver = true;
-			this.gameObject.SetActive(value: false);
+			StartCoroutine(PickUpWeapon());
 		}
+	}
+	IEnumerator PickUpWeapon(){
+		
+
+		pickup.Play();
+		PlayerMovement.revolver = true;
+		Renderer[] rs = GetComponentsInChildren<Renderer>();
+		foreach(Renderer r in rs)
+			r.enabled = false;
+			
+		yield return new WaitForSeconds(pickup.clip.length);
+
+		Destroy(this.gameObject);
 	}
 
 	public override string GetDescription()

@@ -1,4 +1,4 @@
-using UnityEngine;
+﻿using UnityEngine;
 
 public class Door_Interaction : Interactable
 {
@@ -15,11 +15,12 @@ public class Door_Interaction : Interactable
     private bool trigger;
 
     public Animator anim;
-
+	private AudioSource doorClip;
     private void Start()
     {
         //islocked = true;
-        anim.SetBool("isDoorOpen", false);
+	    anim.SetBool("isDoorOpen", false);
+	    doorClip = GetComponentInChildren<AudioSource>();
         trigger = false;
     }
 
@@ -27,12 +28,17 @@ public class Door_Interaction : Interactable
     {
             if (!trigger)
             {
-                anim.SetBool("isDoorOpen", true);
+	            //doorClip.pitch = -1.0f;
+	            // doorClip.Play();
+	            anim.SetBool("isDoorOpen", true);
+
             }
             else
             {
-                
-                anim.SetBool("isDoorOpen", false);
+	            //doorClip.pitch = 1.0f;
+	            //doorClip.Play();               
+	            anim.SetBool("isDoorOpen", false);
+
             }   
     }
 
@@ -40,9 +46,9 @@ public class Door_Interaction : Interactable
     {
         if (isOpened)
         {
-            return "close";
+	        return "Press [E] to Close";
         }
-        return "open";
+	    return "Press [E] to Open";
 
     }
 

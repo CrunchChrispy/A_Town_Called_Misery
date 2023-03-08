@@ -4,27 +4,25 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour
 {
-    public Gun Gun;
-    [Header("Colt 45 Single Action Army Revolver")]
-    public bool revolver;
-    public int revolverAmmo;
-    public GameObject Revolver;
-
- /*   [Header("Winchester Rifle")]
-    public bool rifle;
-    public int rifleAmmo;
-    public GameObject Rifle;
-	*/
-    // Start is called before the first frame update
+	public bool spotted;
+	//public AIMovement AIMovement;
+	public AIMovement[] Enemies;
+	//public GameObject[] Enemies;
+	//public bool[] isChasing;
     void Start()
-    {
-        revolver = false;
-        Revolver.SetActive(false);
+	{
+
+
     }
 
-    // Update is called once per frame
     void Update()
-    {
+	{
+		Enemies = FindObjectsOfType<AIMovement>();
+
+		Debug.Log(Enemies.Length + " Enemies Remaining");
+		
+		
+		
         
     }
 }

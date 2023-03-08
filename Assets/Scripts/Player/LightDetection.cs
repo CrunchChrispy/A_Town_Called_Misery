@@ -13,7 +13,8 @@ public class LightDetection : MonoBehaviour
     public float LightValue = 0.1f;
 	
 	public float visibility;
-    public /*static*/ float s_fLightValue;
+	public /*static*/ float s_fLightValue;
+	public float visiblilityThreshold = .2f;
 
     private const int c_iTextureSize = 1;
 
@@ -22,7 +23,10 @@ public class LightDetection : MonoBehaviour
     private Rect m_rectLight;
     private Color m_LightPixel;
     public TextMeshProUGUI text;
-    public Camera m_camLightScan;
+	public Camera m_camLightScan_Top;
+	public Camera m_camLightScan_Bottom;
+	//public AIMovement AIMovement;
+	public PlayerManager PlayerManager;
 
     private void Start()
     {
@@ -51,9 +55,9 @@ public class LightDetection : MonoBehaviour
         while (true)
         {
             //Set the target texture of the cam.
-            m_camLightScan.targetTexture = m_texTemp;
+	        m_camLightScan_Top.targetTexture = m_texTemp;
             //Render into the set target texture.
-            m_camLightScan.Render();
+	        m_camLightScan_Top.Render();
 
             //Set the target texture as the active rendered texture.
             RenderTexture.active = m_texTemp;
@@ -63,7 +67,7 @@ public class LightDetection : MonoBehaviour
             //Reset the active rendered texture.
             RenderTexture.active = null;
             //Reset the target texture of the cam.
-            m_camLightScan.targetTexture = null;
+	        m_camLightScan_Top.targetTexture = null;
 
             //Read the pixel in middle of the texture.
             m_LightPixel = m_texLight.GetPixel(c_iTextureSize / 2, c_iTextureSize / 2);
@@ -73,19 +77,27 @@ public class LightDetection : MonoBehaviour
 
             if (m_bLogLightValue)
             {
-                if (s_fLightValue <= .3f)
+                if (s_fLightValue <= visiblilityThreshold)
                 {
                     text.text = "Hidden";
                     Color HiddenColor = new Color(1f, 1f, 1f, 1f);
                     text.color = HiddenColor;
                 }
-                if (s_fLightValue >= .3f)
+                if (s_fLightValue >= visiblilityThreshold)
                 {
                     text.text = "Visible";
 
-                    Color visibleColor = new Color(0.9f, .1f, .1f, 1.0f);
+	                Color visibleColor = new Color(1.0f, 0.64f, 0.0f, 1f);
                     text.color = visibleColor;
                 }
+                
+	            if (PlayerManager.spotted == true)
+	            {
+		            text.text = "Spotted";
+
+		            Color visibleColor = new Color(0.9f, .1f, .1f, 1.0f);
+		            text.color = visibleColor;
+	            }
 
                 Debug.Log("Light Value: " + s_fLightValue);
             }

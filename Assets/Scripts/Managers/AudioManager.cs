@@ -1,13 +1,14 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 [System.Serializable]
 public class AudioManager : MonoBehaviour
 {
-	[Header("Player")]
-	public PlayerMovement PlayerMovement;
+	private PlayerMovement PlayerMovement;
 	public  AudioClip[] DirtFootsteps;
 	public  AudioClip[] WoodFootsteps;
+	public  AudioClip[] StoneFootsteps;
 	public  AudioClip gunShot;
 	public AudioClip gunCock;
 	
@@ -17,9 +18,17 @@ public class AudioManager : MonoBehaviour
 	private  int previousArrayIndex;
 	private int FootstepArrayindex;
 	
-	
+	public void Start(){
+		if(SceneManager.GetActiveScene().buildIndex == 1){
+			PlayerMovement = GameObject.Find("Player").GetComponent<PlayerMovement>();
+		}
+		
+	}
 	public void Update(){
-	
+		if(PlayerMovement == null){
+			PlayerMovement = GameObject.FindObjectOfType<PlayerMovement>();
+			Debug.Log("WHERE'S THE PLAYER's FOOTSTEPS BITCH");
+		}
 	}
 
 

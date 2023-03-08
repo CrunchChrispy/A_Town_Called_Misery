@@ -1,20 +1,24 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class WeaponSwitching : MonoBehaviour
 {
-    [HideInInspector]
+	//[HideInInspector]
     public int selectedWeapon = 0;
     public GameObject gunUI;
     void Start()
     {
-        SelectedWeapon();
+	    SelectedWeapon();
+	    gunUI = GameObject.Find("AmmoCount");
     }
 
 
     void Update()
-    {
+	{
+		if(gunUI == null){
+			gunUI = GameObject.Find("AmmoCount");
+		}
         int previousSelectedWeapon = selectedWeapon;
 
         if(Input.GetAxis("Mouse ScrollWheel") > 0f)

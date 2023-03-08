@@ -6,6 +6,7 @@ public class AIMovement: MonoBehaviour
 {
 
 	public Gun Gun;
+	public PlayerManager PlayerManager;
     public Transform[] moveSpots;
     private int randomSpot;
 
@@ -25,15 +26,18 @@ public class AIMovement: MonoBehaviour
 
     public Transform strafeLeft;
     public Transform strafeRight;
-    private int randomStrafeDir;
+	private int randomStrafeDir;
 
 
 	[Range (5, 30)]
-    public float chaseRadius = 20f;
+	public float chaseRadius = 20f;
+	[HideInInspector]
+	public bool isChasing;
     public float facePlayerFactor = 20f;
 	public PlayerMovement PlayerMovement;
-	public LightDetection LightDetection;
+	public LightTracker LightTracker;
 	//public AudioSource Player;
+	
     //AI Sight and Memory
     private bool aiMemorizesPlayer = false;
     public float memoryStartTime = 10;
@@ -42,8 +46,8 @@ public class AIMovement: MonoBehaviour
     //AI Hearing
     Vector3 noisePosition;
 	private bool aiHeardPlayer = false;
-	[Range (5, 30)]
-    public float noiseTravelDistance = 50f;
+	[Range (10, 60)]
+	public float noiseTravelDistance = 100f;
     public float spinSpeed = 3f;
     private bool canSpin = false;
     private float isSpinningTime;
@@ -52,6 +56,9 @@ public class AIMovement: MonoBehaviour
 	public bool playerVisible;
 	[Range (2, 7)]
 	public float meleeRadius = 5f;
+	
+	[Header ("Animation")]
+	public Animator Enemy;
 	
 	[Header ("Colt 45 Single Action Army Revolver")]
 	public int revolverAmmo;	
@@ -67,12 +74,18 @@ public class AIMovement: MonoBehaviour
     {
         waitTime = startWaitTime;
 	    randomSpot = Random.Range(0, moveSpots.Length);
+	    PlayerManager = GameObject.FindObjectOfType<PlayerManager>();
+	    PlayerMovement = GameObject.FindObjectOfType<PlayerMovement>();
+	    LightTracker = GameObject.FindObjectOfType<LightTracker>();
 
     }
 
     void Update()
-    {
-        float distance = Vector3.Distance(PlayerMovement.playerPos, transform.position);
+	{
+		
+		float distance = Vector3.Distance(PlayerMovement.playerPos, transform.position);
+		
+
 
         if (playerVisible == false && aiMemorizesPlayer == false && aiHeardPlayer == false)
         {
@@ -85,20 +98,21 @@ public class AIMovement: MonoBehaviour
             canSpin = true;
             GoToNoisePosition();
         }
-        else if (playerVisible == true && LightDetection.s_fLightValue <= .3f)
-        {
-            aiMemorizesPlayer = true;
+		else if (playerVisible == true)
+		{
+			aiMemorizesPlayer = true;
+			Debug.Log("CHASE DAMNIT!");
+			ChasePlayer();
 
-            ChasePlayer();
+			FacePlayer();
+		}
+		else if (aiMemorizesPlayer == true && playerVisible == false)
+		{
+			ChasePlayer();
+			StartCoroutine(AiMemory());
 
-            FacePlayer();
-        }
-        else if (aiMemorizesPlayer == true && playerVisible == false)
-        {
-            ChasePlayer();
-            StartCoroutine(AiMemory());
+		}
 
-        }
     }
     
 	void OnDrawGizmosSelected()
@@ -174,27 +188,38 @@ public class AIMovement: MonoBehaviour
 
     void Patrol()
     {
-        nav.SetDestination(moveSpots[randomSpot].position);
+	    nav.SetDestination(moveSpots[randomSpot].position);
+	    PlayerManager.spotted = false;
+	    Enemy.SetBool("isWalking", true);
 
         if(Vector3.Distance(transform.position, moveSpots[randomSpot].position) < 2.0f)
         {
+        	
+        	
             if(waitTime <= 0)
             {
                 randomSpot = Random.Range(0, moveSpots.Length);
 
-                waitTime = startWaitTime;
+	            waitTime = startWaitTime;
+	            
             }
-            else { waitTime -= Time.deltaTime; }
+            else { waitTime -= Time.deltaTime;
+
+	            Enemy.SetBool("isWalking", false);
+            }
         }
     }
 
-    void ChasePlayer()
+	public void ChasePlayer()
     {
-        float distance = Vector3.Distance(PlayerMovement.playerPos, transform.position);
+	    float distance = Vector3.Distance(PlayerMovement.playerPos, transform.position);
+        
+	    
 
-        if(distance <= chaseRadius && distance > distToPlayer)
+	    if(distance <= chaseRadius && distance > distToPlayer && aiMemorizesPlayer == true)
         {
-            nav.SetDestination(PlayerMovement.playerPos);
+		    nav.SetDestination(PlayerMovement.playerPos);
+		    PlayerManager.spotted = true;
         }
         else if (nav.isActiveAndEnabled && distance <= distToPlayer)
         {
@@ -222,12 +247,27 @@ public class AIMovement: MonoBehaviour
     
 
     public void InSight()
-    {
-        playerVisible = true;
+	{
+
+		
+		if(LightTracker.Light >= LightTracker.VisibilityThreshold){
+		playerVisible = true;
+		}
+			
+		if(distToPlayer <= meleeRadius){
+			playerVisible = true;
+		}
+
+		//else{
+		//	playerVisible = false;
+		//}
+
 }
     public void OutOfSight()
-    {
-        playerVisible = false;
+	{
+			playerVisible = false;
+		
+
     }
 
     void FacePlayer()

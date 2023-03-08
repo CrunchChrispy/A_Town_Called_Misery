@@ -18,7 +18,7 @@ public class Gun : MonoBehaviour
     public UIManager UIManager;
 	public AudioManager AudioManager;
     public Camera fpsCam;
-    //public GameObject impactEffect;
+	// public GameObject impactEffect;
 
     
     private int reloadedAmmo;
@@ -26,7 +26,8 @@ public class Gun : MonoBehaviour
 	private float nextTimeToFire = 0f;
 	private AudioSource noise;
 
-    ParticleSystem muzzleFlash;
+	public ParticleSystem muzzleFlash;
+	public Animator Flash;
     AIMovement AIMovement;
 	public PlayerMovement PlayerMovement;
 
@@ -34,20 +35,21 @@ public class Gun : MonoBehaviour
 
     void Start()
 	{
-
-	    	
-		//PlayerMovement.currentAmmo = 0;
+		AudioManager = GameObject.FindObjectOfType<AudioManager>();
+		UIManager = GameObject.FindObjectOfType<UIManager>();
+		PlayerMovement.currentAmmo = 0;
 		//if (PlayerMovement.currentAmmo <= 0)
 		//		PlayerMovement.currentAmmo = ammoCapacity;
-		//UIManager.AmmoCount.text = PlayerMovement.currentAmmo + "/" + PlayerMovement.revolverAmmo;
-
-	    muzzleFlash = GetComponentInChildren<ParticleSystem>();
+		UIManager.AmmoCount.text = PlayerMovement.currentAmmo + "/" + PlayerMovement.revolverAmmo;
+		
+		// muzzleFlash = GetComponentInChildren<ParticleSystem>();
 	    noise = GetComponent<AudioSource>();
 
     }
 
     void Update()
 	{
+		
 	    	
 			UIManager.AmmoCount.text = PlayerMovement.currentAmmo + "/" + PlayerMovement.revolverAmmo;
 			
@@ -69,7 +71,7 @@ public class Gun : MonoBehaviour
 					
 			}
            
-		if(PlayerMovement.revolver = true) {
+		if(PlayerMovement.revolver == true) {
         				
 		if (Input.GetButtonDown("Fire1") && Time.time >= nextTimeToFire && PlayerMovement.currentAmmo >= 1 && Time.timeScale == 1)
 		{
@@ -138,11 +140,12 @@ public class Gun : MonoBehaviour
     }
 
     void Shoot()
-    {
+	{
+		StartCoroutine(GunSounds());
 	    muzzleFlash.Play();
 	    noise.clip = AudioManager.gunShot;
 	    noise.Play();
-	    //StartCoroutine(GunSounds());		 
+		 
 	    PlayerMovement.currentAmmo--;
 	   
         RaycastHit hit;
@@ -164,11 +167,14 @@ public class Gun : MonoBehaviour
                 //Destroy(ImpactOBJ, 2f);
             }
         }
-
     }
-	//IEnumerator GunSounds(){
-
+	IEnumerator GunSounds(){
+		
+		Flash.SetBool("flash", true);
+		yield return new WaitForSeconds(.5f);
+		Flash.SetBool("flash", false);
+		
 	//	noise.clip = AudioManager.gunCock;
 	//	yield return new WaitForSeconds(reloadTime - .25f);
-	//}
+	}
 }

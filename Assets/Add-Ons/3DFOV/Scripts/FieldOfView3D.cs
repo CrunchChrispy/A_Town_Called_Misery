@@ -5,9 +5,9 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace FOV3D
-{
-    [ExecuteInEditMode]
+//namespace FOV3D
+//{
+//    [ExecuteInEditMode]
     public class FieldOfView3D : MonoBehaviour
     {
         #region Variables
@@ -38,7 +38,7 @@ namespace FOV3D
         [Range(0f, 2f)] private float turnFraction;
         private float power = 1;
 
-        private FOVVisualizer fovV;
+	    // private FOVVisualizer fovV;
 
         [HideInInspector] public List<Vector3> m_directions = new List<Vector3>();
         [HideInInspector] public List<Vector3> m_point = new List<Vector3>();
@@ -128,7 +128,7 @@ namespace FOV3D
                             }                                                          
                             break;
                     }
-                    if ((ValidateVisualizer()) && (fovV.viewAllRaycastLines)) fovV.DrawRaycastLines(i);
+	                // if ((ValidateVisualizer()) && (fovV.viewAllRaycastLines)) fovV.DrawRaycastLines(i);
                 }
             }
         }
@@ -179,7 +179,7 @@ namespace FOV3D
                     StartCoroutine(OnTargetEventTrigger(viewObj));
                 }
             }
-            if ((ValidateVisualizer()) && (fovV.viewSeenObjectLines)) fovV.DrawObjectLines();
+	        // if ((ValidateVisualizer()) && (fovV.viewSeenObjectLines)) fovV.DrawObjectLines();
         }
         private void FixedUpdate()
         {
@@ -188,7 +188,7 @@ namespace FOV3D
                 for (int j = 0; j < seenObjects.Count; j++)
                 {
                     Collider collider = seenObjects[j].GetComponent<Collider>();
-                    if (!CheckPointInsideCone(m_point[j], transform.position, transform.forward, viewAngle, viewRadius))
+	                if (!CheckPointInsideCone(m_point[j], transform.position, transform.forward, viewAngle, viewRadius))
                     {
                         RemoveFromSight(j);
                         break;
@@ -278,15 +278,15 @@ namespace FOV3D
             tempbool = false;
             onTargetLost.Invoke();
         }
-        private bool ValidateVisualizer()
-        {
-            if (this.gameObject.TryGetComponent(out FOVVisualizer f))
-            {
-                fovV = f;
-                return true;
-            }
-            else
-                return false;
-        }
-    }
+    //    private bool ValidateVisualizer()
+    //    {
+	//         if (this.gameObject.TryGetComponent(out FOVVisualizer f))
+    //        {
+    //            fovV = f;
+    //            return true;
+    //        }
+    //        else
+    //            return false;
+    //    }
+    //}
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class EnemyGun : MonoBehaviour
 {
-	public float damage;
+	public int damage;
 	[Range(10,110)]
 	public float range;
 	public float fireRate;
@@ -18,7 +18,7 @@ public class EnemyGun : MonoBehaviour
 	public AudioManager AudioManager;
 	//public GameObject impactEffect;
 
-    
+	Vector3 dir;
 	private int reloadedAmmo;
 	private bool isReloading = false;
 	private float nextTimeToFire = 0f;
@@ -32,6 +32,8 @@ public class EnemyGun : MonoBehaviour
 
 	void Start()
 	{
+		
+		AudioManager = GameObject.FindObjectOfType<AudioManager>();
 
 		AIMovement = GetComponentInParent<AIMovement>();
 		muzzleFlash = GetComponentInChildren<ParticleSystem>();
@@ -54,7 +56,7 @@ public class EnemyGun : MonoBehaviour
 		}
         
 		if(AIMovement.playerVisible && Time.time >= nextTimeToFire && AIMovement.currentAmmo >= 1)	{
-		if(AIMovement.distToPlayer <= AIMovement.chaseRadius && AIMovement.currentAmmo > 0){
+			if(AIMovement.distToPlayer <= AIMovement.chaseRadius && AIMovement.currentAmmo > 0 && AIMovement.playerVisible){
 			nextTimeToFire = Time.time + .5f / fireRate;
 				Shoot();
 		}
@@ -95,13 +97,18 @@ public class EnemyGun : MonoBehaviour
 		int layerMask = LayerMask.GetMask("Enemy");
 		
 		
+		for(int i = 0; i < ammoCapacity; i++){
+			dir = new Vector3(Random.Range(-1.0f,1.0f),Random.Range(-0f,0f),Random.Range(-1.0f,1.0f));
+			Vector3 sprayDir = transform.TransformVector(dir);
+		}
 		
 		
 		RaycastHit hit;
+		Debug.DrawRay(transform.position, transform.position + dir, Color.red);
  
 		if(Vector3.Distance(transform.position, PlayerMovement.transform.position) < range )
 		{
-			if(Physics.Raycast(transform.position, (PlayerMovement.transform.position - transform.position), out hit, range))
+			if(Physics.Raycast(transform.position, (PlayerMovement.transform.position - transform.position + dir), out hit, range))
 			{
 				if(hit.transform.position == PlayerMovement.transform.position)
 				{

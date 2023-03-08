@@ -1,11 +1,11 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 
-namespace FOV3D
-{
-    [ExecuteInEditMode]
+//namespace FOV3D
+//{
+//    [ExecuteInEditMode]
     public class FOVVisualizer : MonoBehaviour
     {
         [HideInInspector] public FieldOfView3D fov3D;
@@ -166,20 +166,20 @@ namespace FOV3D
 
             #region Points
             #region Extents
-            //Gizmos.color = Color.green;
-            //Gizmos.DrawSphere(arcCenter, pointSize);
-            //Gizmos.DrawSphere(rightDirection * viewRadius + transform.position, pointSize);
-            //Gizmos.DrawSphere(leftDirection * viewRadius + transform.position, pointSize);
-            //Gizmos.DrawSphere(upDirection * viewRadius + transform.position, pointSize);
-            //Gizmos.DrawSphere(downDirection * viewRadius + transform.position, pointSize);
+            Gizmos.color = Color.green;
+            Gizmos.DrawSphere(arcCenter, pointSize);
+            Gizmos.DrawSphere(rightDirection * viewRadius + transform.position, pointSize);
+            Gizmos.DrawSphere(leftDirection * viewRadius + transform.position, pointSize);
+            Gizmos.DrawSphere(upDirection * viewRadius + transform.position, pointSize);
+            Gizmos.DrawSphere(downDirection * viewRadius + transform.position, pointSize);
             #endregion
             #region Origin
             Gizmos.color = Color.black;
             Gizmos.DrawSphere(transform.position, pointSize);
             #endregion
             #region Centerpoint
-            //Gizmos.color = Color.yellow;
-            //Gizmos.DrawSphere(circleCenter, pointSize);
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawSphere(circleCenter, pointSize);
             #endregion
             #endregion
 
@@ -210,24 +210,24 @@ namespace FOV3D
                 #endregion
                 #region Cross
                 #region + Cross
-                //Gizmos.DrawLine(transform.position + leftDirection * viewRadius, transform.position + rightDirection * viewRadius);
-                //Gizmos.DrawLine(transform.position + downDirection * viewRadius, transform.position + upDirection * viewRadius);
+                Gizmos.DrawLine(transform.position + leftDirection * viewRadius, transform.position + rightDirection * viewRadius);
+                Gizmos.DrawLine(transform.position + downDirection * viewRadius, transform.position + upDirection * viewRadius);
                 #endregion
                 #region X Cross
                 var d1 = Quaternion.AngleAxis(45, transform.forward) * transform.right;
                 var d2 = Quaternion.AngleAxis(-45, transform.forward) * transform.right;
-                Ray r1 = new Ray(center, d1 * radius);
-                Ray r2 = new Ray(center, -d1 * radius);
-                Ray r3 = new Ray(center, d2 * radius);
-                Ray r4 = new Ray(center, -d2 * radius);
-                Vector3 p1 = r1.GetPoint(radius);
-                Vector3 p2 = r2.GetPoint(radius);
-                Vector3 p3 = r3.GetPoint(radius);
-                Vector3 p4 = r4.GetPoint(radius);
-                //Gizmos.DrawRay(center, d1 * radius);
-                //Gizmos.DrawRay(center, -d1 * radius);
-                //Gizmos.DrawRay(center, d2 * radius);
-                //Gizmos.DrawRay(center, -d2 * radius);
+                //Ray r1 = new Ray(center, d1 * radius);
+                //Ray r2 = new Ray(center, -d1 * radius);
+                //Ray r3 = new Ray(center, d2 * radius);
+                //Ray r4 = new Ray(center, -d2 * radius);
+                //Vector3 p1 = r1.GetPoint(radius);
+                //Vector3 p2 = r2.GetPoint(radius);
+                //Vector3 p3 = r3.GetPoint(radius);
+                //Vector3 p4 = r4.GetPoint(radius);
+                Gizmos.DrawRay(center, d1 * radius);
+                Gizmos.DrawRay(center, -d1 * radius);
+                Gizmos.DrawRay(center, d2 * radius);
+                Gizmos.DrawRay(center, -d2 * radius);
                 #endregion
                 #endregion
                 #region Cone
@@ -238,10 +238,10 @@ namespace FOV3D
                 Gizmos.DrawRay(transform.position, downDirection * viewRadius);
                 #endregion
                 #region X Cone
-                Gizmos.DrawLine(transform.position, p1);
-                Gizmos.DrawLine(transform.position, p2);
-                Gizmos.DrawLine(transform.position, p3);
-                Gizmos.DrawLine(transform.position, p4);
+                //Gizmos.DrawLine(transform.position, p1);
+                //Gizmos.DrawLine(transform.position, p2);
+                //Gizmos.DrawLine(transform.position, p3);
+                //Gizmos.DrawLine(transform.position, p4);
                 #endregion
                 #endregion
             }
@@ -270,4 +270,4 @@ namespace FOV3D
         }
 #endif
     }
-}
+//}
